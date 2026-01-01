@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/images/favicon-32x32.png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Frontend Mentor | Age calculator app</title>
+
+    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+    <style>
+      .attribution {
+        font-size: 11px;
+        text-align: center;
+      }
+      .attribution a {
+        color: hsl(228, 45%, 44%);
+      }
+      :root {
+        --purple: hsl(259, 100%, 65%);
+        --red: hsl(0, 100%, 67%);
+        --white: hsl(0, 100%, 100%);
+        --grey-100: hsl(0, 0%, 94%);
+        --grey-200: hsl(0, 0%, 86%);
+        --grey-500: hsl(0, 1%, 44%);
+        --black: hsl(0, 0%, 0%);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background: var(--grey-100);
+      }
+      main {
+        background: var(--white);
+        width: 60%;
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 36px;
+        border-radius: 12px 12px 20% 12px;
+      }
+      .container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      label {
+        display: block;
+        color: var(--grey-500);
+        font-weight: 700;
+      }
+      input::placeholder {
+        font-weight: 800;
+      }
+      input {
+        width: 120px;
+        padding: 10px 6px 10px 2px;
+        font-size: 32px;
+        border: 1px solid var(--grey-200);
+        outline: none;
+        border-radius: 6px;
+      }
+      input:focus {
+        border: 2px solid var(--purple);
+      }
+      .arrow {
+        background: var(--purple);
+        border-radius: 50%;
+        padding: 14px;
+        position: absolute;
+        top: -50px;
+        right: 0;
+      }
+      .arrow:hover {
+        opacity: 0.8;
+      }
+      .arrow:active {
+        opacity: 0.5;
+      }
+      .result {
+        position: relative;
+      }
+      .result p {
+        font-size: 40px;
+        font-weight: 800;
+        margin: 0;
+      }
+      .result p span {
+        color: var(--purple);
+        margin: 5px;
+      }
+      p {
+        margin: 0;
+      }
+      .red {
+        color: var(--red);
+      }
+      @media (max-width: 800px) {
+        main {
+          width: 90%;
+          height: 100%;
+        }
+        .arrow {
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .container {
+          margin-bottom: 50px;
+        }
+        .result {
+          padding-top: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main role="main">
+      <section class="container">
+        <div class="dayContainer">
+          <label for="day">DAY</label>
+          <input type="number" name="day" id="day" placeholder="DD" required />
+          <p class="dayError error"></p>
+        </div>
+        <div class="monthContainer">
+          <label for="month">MONTH</label>
+          <input
+            type="number"
+            name="month"
+            id="month"
+            placeholder="MM"
+            required
+          />
+          <p class="monthError error"></p>
+        </div>
+        <div class="yearContainer">
+          <label for="year">YEAR</label>
+          <input
+            type="number"
+            name="year"
+            id="year"
+            placeholder="YYYY"
+            required
+          />
+          <p class="yearError error"></p>
+        </div>
+      </section>
+      <hr />
+      <section class="result">
+        <img
+          src="assets/images/icon-arrow.svg"
+          class="arrow"
+          alt="Arrow Icon"
+        />
+        <p><span id="yearsResult">--</span>years</p>
+        <p><span id="monthsResult">--</span>months</p>
+        <p><span id="daysResult">--</span>days</p>
+      </section>
+      <p id="fullDate"></p>
+    </main>
+
+    <div class="attribution">
+      Challenge by
+      <a href="https://www.frontendmentor.io?ref=challenge" target="_blank"
+        >Frontend Mentor</a
+      >. Coded by <a href="#">Your Name Here</a>.
+    </div>
+    <script>
+      const day = document.getElementById("day");
+      const month = document.getElementById("month");
+      const year = document.getElementById("year");
+      const arrow = document.querySelector(".arrow");
+      const labels = document.querySelectorAll("label");
+      const errors = document.querySelectorAll(".error");
+      const de = document.querySelector(".dayError");
+      const me = document.querySelector(".monthError");
+      const ye = document.querySelector(".yearError");
+
+      const fullDate = document.getElementById("fullDate");
+      function updateDate() {
+        fullDate.textContent = "Date today:" + " " + new Date();
+      }
+      updateDate();
+      setInterval(updateDate, 1000);
+      function validate() {
+        let isValid = true;
+
+        const d = Number(day.value);
+        const m = Number(month.value);
+        const y = Number(year.value);
+
+        if (!d || !m || !y) {
+          errors.forEach((error) => {
+            error.textContent = "This field is required";
+            error.classList.add("red");
+          });
+          labels.forEach((label) => {
+            label.classList.add("red");
+          });
+          return false;
+        } else {
+          errors.forEach((error) => {
+            error.textContent = "";
+            error.classList.remove("red");
+          });
+          labels.forEach((label) => {
+            label.classList.remove("red");
+          });
+        }
+
+        if (d < 1 || d > 31) {
+          de.textContent = "Must be a valid day";
+          de.classList.add("red");
+          labels[0].classList.add("red");
+          isValid = false;
+        } else {
+          de.textContent = "";
+          de.classList.remove("red");
+          labels[0].classList.remove("red");
+        }
+
+        if (m < 1 || m > 12) {
+          me.textContent = "Must be a valid month";
+          me.classList.add("red");
+          labels[1].classList.add("red");
+          isValid = false;
+        } else {
+          me.textContent = "";
+          me.classList.remove("red");
+          labels[1].classList.remove("red");
+        }
+
+        if (y < 1900 || y > new Date().getFullYear()) {
+          ye.textContent = "Must be a valid year";
+          ye.classList.add("red");
+          labels[2].classList.add("red");
+          isValid = false;
+        } else {
+          ye.textContent = "";
+          ye.classList.remove("red");
+          labels[2].classList.remove("red");
+        }
+
+        return isValid;
+      }
+
+      function calc() {
+        const d = Number(day.value);
+        const m = Number(month.value);
+        const y = Number(year.value);
+
+        const yearsResult = document.getElementById("yearsResult");
+        const monthsResult = document.getElementById("monthsResult");
+        const daysResult = document.getElementById("daysResult");
+
+        const today = new Date();
+
+        let years = today.getFullYear() - y;
+        let months = today.getMonth() + 1 - m;
+        let days = today.getDate() - d;
+
+        if (days < 0) {
+          months--;
+          const prevMonthDays = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            0
+          ).getDate();
+          days += prevMonthDays;
+        }
+        if (months < 0) {
+          years--;
+          months += 12;
+        }
+
+        daysResult.textContent = days;
+        monthsResult.textContent = months;
+        yearsResult.textContent = years;
+      }
+
+      arrow.addEventListener("click", () => {
+        if (!validate()) return;
+        calc();
+        // continue logic here
+      });
+    </script>
+  </body>
+</html>
